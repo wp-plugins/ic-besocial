@@ -142,7 +142,6 @@ BeSocial = Object.extend({
 
 	init: function () {
 		this.url = window.location.href.replace(/(?:#.*)?$/, '');
-		this.url = 'http://www.maikelnai.es/2010/05/31/los-mayas-dominaron-el-caucho-muchisimo-antes-que-goodyear/';
 
 		if (this.twitter_active === '1') {
 			this.bitlyAPI();
