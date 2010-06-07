@@ -4,7 +4,7 @@ Plugin Name: ic BeSocial
 Plugin URI: http://wordpress.org/extend/plugins/ic-besocial/
 Description: This plugin will allow your visitors to share your content via Meneame, Bitacoras.com, Facebook and Twitter.
 Author: Jose Cuesta
-Version: 1.2.1
+Version: 1.3
 Author URI: http://www.inerciacreativa.com/
 */
 
@@ -164,8 +164,9 @@ class ic_Plugin {
 
 class ic_BeSocial extends ic_Plugin {
 
-	var $version	= '1.2.1';
-	var $buttons	= array();
+	var $version	= '1.3';
+	var $buttons	= array('meneame', 'bitacoras', 'facebook', 'twitter');
+	var $objects	= array();
 
 	var $path		= '';
 	var $uri		= '';
@@ -179,15 +180,14 @@ class ic_BeSocial extends ic_Plugin {
 		load_plugin_textdomain('besocial', false, $this->getPath('lang'));
 
 		add_action('admin_menu', array(&$this, 'initAdmin'));
-		add_action('wp_enqueue_scripts', array(&$this, 'initButtons'), 9999);
+		add_action('wp_enqueue_scripts', array(&$this, 'initButtons'));
 		add_action('the_content', array(&$this, 'showButtons'), 9999);
 
 		$this->addOption('counters', array('label' => __('Show counters', 'besocial'), 'type' => 'checkbox', 'value' => true));
 
-		$this->addButton('meneame');
-		$this->addButton('bitacoras');
-		$this->addButton('facebook');
-		$this->addButton('twitter');
+		foreach ( $this->buttons as $name ) {
+			$this->getButton($name);
+		}
 	}
 
 	function getPath( $file ) {
@@ -198,10 +198,16 @@ class ic_BeSocial extends ic_Plugin {
 		return $this->uri . '/' . $file;
 	}
 
-	function addButton( $name ) {
+	function &getButton( $name ) {
 		$name = strtolower($name);
-		$class = __CLASS__ . '_' . ucfirst($name);
-		$this->buttons[$name] =& new $class($this->getOption('counters'));
+
+		if ( !isset($this->objects[$name]) ) {
+			$class = __CLASS__ . '_' . ucfirst($name);
+			$this->objects[$name] =& new $class($this->getOption('counters'));
+			return $this->objects[$name];
+		}
+
+		return $this->objects[$name];
 	}
 
 	/**
@@ -226,7 +232,8 @@ class ic_BeSocial extends ic_Plugin {
 		wp_nonce_field($this->id);
 
 		$this->getControls();
-		foreach ( $this->buttons as $button ) {
+		foreach ( $this->buttons as $name ) {
+			$button =& $this->getButton($name);
 			$button->getControls();
 		}
 
@@ -242,7 +249,8 @@ class ic_BeSocial extends ic_Plugin {
 
 		$update = $this->saveOptions();
 
-		foreach ( $this->buttons as $button ) {
+		foreach ( $this->buttons as $name ) {
+			$button =& $this->getButton($name);
 			$update = $button->saveOptions() || $update;
 		}
 
@@ -257,11 +265,10 @@ class ic_BeSocial extends ic_Plugin {
 
 		if ( !empty($post) ) {
 			$vars = array();
-
-			foreach ( $this->buttons as $button ) {
+			foreach ( $this->buttons as $name ) {
+				$button =& $this->getButton($name);
 				$vars = array_merge($vars, $button->setPost($post));
 			}
-
 			$this->getStyles();
 			$this->getScripts($vars);
 		}
@@ -330,7 +337,8 @@ class ic_BeSocial extends ic_Plugin {
 	function showButtons( $content ) {
 		$buttons = '';
 
-		foreach ( $this->buttons as $name => $button ) {
+		foreach ( $this->buttons as $name ) {
+			$button =& $this->getButton($name);
 			$buttons .= $button->toHTML('<li>', '</li>');
 		}
 
@@ -360,10 +368,10 @@ class ic_BeSocial_Button extends ic_Plugin {
 		$this->addOption('active', array('label' => __('Active', 'besocial'), 'type' => 'checkbox', 'value' => 1));
 	}
 
-	function initButton() {}
+	function initButton( $post ) {}
 
 	function setPost( $post ) {
-		if ( $this->isActive($post) ) {
+		if ( $this->isActive() ) {
 			$this->initButton($post);
 		}
 
@@ -382,7 +390,7 @@ class ic_BeSocial_Button extends ic_Plugin {
 		$this->title = $title;
 	}
 
-	function isActive( $post ) {
+	function isActive() {
 		return $this->getOption('active');
 	}
 
@@ -480,7 +488,6 @@ class ic_BeSocial_Twitter extends ic_BeSocial_Button {
 	 */
 	function getShortURL( $post_ID, $long ) {
 		$short = get_post_meta($post_ID, '_' . $this->id, true);
-
 		if ( empty($short) ) {
 			if ( $response = $this->getAPI('shorten', 'longUrl', rawurlencode($long)) ) {
 				if ( $short = $this->getElement('shortUrl', $response) ) {
@@ -556,6 +563,7 @@ class ic_BeSocial_Bitacoras extends ic_BeSocial_Button {
 }
 
 class ic_BeSocial_Meneame extends ic_BeSocial_Button {
+
 	function init() {
 		parent::init();
 	}
