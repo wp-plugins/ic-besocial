@@ -12,6 +12,9 @@ Para acortar las URLs se utiliza Bit.ly, y éstas se generan automáticamente al
 
 == Changelog ==
 
+= 1.3.1 =
+* Correcciones en las hojas de estilos
+
 = 1.3 =
 * Compatibilidad con PHP 4
 
