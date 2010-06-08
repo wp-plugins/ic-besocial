@@ -158,8 +158,4 @@ BeSocial = Object.extend({
 	}
 }, BeSocial);
 
-function BeSocialmeneameResponse(data) {
-	BeSocial.meneameResponse(data);
-}
-
 BeSocial.init();
