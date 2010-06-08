@@ -3,13 +3,14 @@
 	z-index: 10;
 }
 #besocial ul {
-	margin: 10px 0 -40px;
+	margin: 10px 0;
+	padding: 0;
 	float: right;
+	list-style: none;
 }
 #besocial li {
 	float: left;
-	margin-left: 10px;
-	list-style: none;
+	margin: 0 0 0 10px;
 }
 #besocial a {
 	float: left;
@@ -22,7 +23,7 @@
 #besocial span {
 	float: left;
 	padding: 1px 8px 2px;
-	font-family: Arial;
+	font-family: Arial, sans-serif;
 	font-size: 10px;
 	cursor: pointer;
 }
