@@ -4,7 +4,7 @@ Plugin Name: ic BeSocial
 Plugin URI: http://wordpress.org/extend/plugins/ic-besocial/
 Description: This plugin will allow your visitors to share your content via Meneame, Bitacoras.com, Facebook and Twitter.
 Author: Jose Cuesta
-Version: 1.3
+Version: 1.3.2
 Author URI: http://www.inerciacreativa.com/
 */
 
@@ -164,7 +164,7 @@ class ic_Plugin {
 
 class ic_BeSocial extends ic_Plugin {
 
-	var $version	= '1.3';
+	var $version	= '1.3.2';
 	var $buttons	= array('meneame', 'bitacoras', 'facebook', 'twitter');
 	var $objects	= array();
 
@@ -334,7 +334,7 @@ class ic_BeSocial extends ic_Plugin {
 	 *
 	 * @param string $content El contenido del post
 	 */
-	function showButtons( $content ) {
+	function showButtons( $content = '' ) {
 		$buttons = '';
 
 		foreach ( $this->buttons as $name ) {
@@ -575,5 +575,5 @@ class ic_BeSocial_Meneame extends ic_BeSocial_Button {
 	}
 }
 
-new ic_BeSocial();
+$ic_besocial =& new ic_BeSocial();
 ?>

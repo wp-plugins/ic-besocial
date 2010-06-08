@@ -3,7 +3,7 @@ Contributors: Jose Cuesta
 Tags: social, button, facebook, twitter, meneame, bitacoras
 Requires at least: 2.9
 Tested up to: 2.9.2
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 
 == Description ==
 
@@ -13,7 +13,7 @@ Para acortar las URLs se utiliza Bit.ly, y éstas se generan automáticamente al
 
 == Changelog ==
 
-= 1.3.1 =
+= 1.3.2 =
 * Correcciones en las hojas de estilos
 
 = 1.3 =
