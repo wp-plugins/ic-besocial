@@ -18,8 +18,6 @@ Para acortar las URLs se utiliza Bit.ly, y éstas se generan automáticamente al
 
 = 1.3 =
 * Compatibilidad con PHP 4
-
-= 1.3 =
 * Corregido error en el valor por defecto de las opciones
 
 = 1.2 =
