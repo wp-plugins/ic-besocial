@@ -1,19 +1,43 @@
 #besocial {
+	overflow: hidden;
+	clear: both;
 	position: relative;
 	z-index: 10;
+	width: 100%;
 }
 #besocial ul {
 	margin: 10px 0;
 	padding: 0;
-	float: right;
+	width: 100%;
 	list-style: none;
 }
-#besocial li {
+#besocial ul.center {
+	text-align: center;
+}
+#besocial ul.center li {
+	display: inline;
+	margin: 0;
+	padding: 0 5px;
+}
+#besocial ul.left li {
 	float: left;
+	margin: 0 10px 0 0;
+}
+#besocial ul.right li {
+	float: right;
 	margin: 0 0 0 10px;
 }
+#besocial li {
+	border: none;
+	padding: 0;
+	text-indent: 0;
+}
+#besocial li:before {
+	content: '';
+}
 #besocial a {
-	float: left;
+	display: -moz-inline-stack;
+	display: inline-block;
 	text-decoration: none;
 }
 #besocial a:hover {
@@ -23,8 +47,8 @@
 #besocial span {
 	float: left;
 	padding: 1px 8px 2px;
-	font-family: Arial, sans-serif;
-	font-size: 10px;
+	font: 10px/15px Arial, sans-serif;
+	text-indent: 0;
 	cursor: pointer;
 }
 #besocial .besocial-text {

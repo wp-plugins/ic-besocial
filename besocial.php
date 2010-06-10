@@ -2,9 +2,9 @@
 /*
 Plugin Name: ic BeSocial
 Plugin URI: http://wordpress.org/extend/plugins/ic-besocial/
-Description: This plugin will allow your visitors to share your content via Meneame, Bitacoras.com, Facebook and Twitter.
+Description: Genera botones para el envío o la votación en distintas redes sociales: Facebook, Twitter, Meneame y Bitacoras.com. Opcionalmente puede mostrar contadores con el número de votos o veces que se ha compartido (según la red).
 Author: Jose Cuesta
-Version: 1.3.2
+Version: 1.3.3
 Author URI: http://www.inerciacreativa.com/
 */
 
@@ -49,7 +49,8 @@ class ic_Plugin {
 			'type'		=> 'text',
 			'value'		=> '',
 			'label'		=> '',
-			'info'		=> ''
+			'info'		=> '',
+			'enum'		=> null
 		);
 		$option = wp_parse_args($option, $default);
 		$this->defaults[$name] = $option;
@@ -121,14 +122,14 @@ class ic_Plugin {
 
 		foreach ( $this->defaults as $name => $option ) {
 			if ( $option['permanent']) {
-				$this->getControl($name, $this->getOption($name), $option['type'], $option['label'], $option['info']);
+				$this->getControl($name, $this->getOption($name), $option['type'], $option['label'], $option['info'], $option['enum']);
 			}
 		}
 
 		echo '</table>', "\n";
 	}
 
-	function getControl( $option, $value, $type, $label = '', $info = '' ) {
+	function getControl( $option, $value, $type, $label = '', $info = '', $enum = null ) {
 		if ( $type == 'text' ) {
 			$extra = 'class="regular-text"';
 			$value = esc_attr($value);
@@ -136,6 +137,8 @@ class ic_Plugin {
 			$extra = ($value) ? 'checked="checked"' : '';
 			$value = '1';
 		} elseif ( $type == 'hidden' ) {
+			$extra = '';
+		} elseif ( $type == 'select' ) {
 			$extra = '';
 		}
 
@@ -148,7 +151,16 @@ class ic_Plugin {
 				echo '<td>';
 			}
 
-			printf('<input id="%1$s-%2$s" name="%1$s[%3$s]" type="%4$s" value="%5$s" %6$s/>', $this->name, trim($option, '_'), $option, $type, $value, $extra);
+			if ( $type != 'select' ) {
+				printf('<input id="%1$s-%2$s" name="%1$s[%3$s]" type="%4$s" value="%5$s" %6$s/>', $this->name, trim($option, '_'), $option, $type, $value, $extra);
+			} else {
+				printf('<select id="%1$s-%2$s" name="%1$s[%3$s]">', $this->name, trim($option, '_'), $option);
+				foreach ( $enum as $key => $val ) {
+					$selected = ($key == $value) ? ' selected="selected"' : '';
+					printf('<option value="%s"%s>%s </option>', $key, $selected, $val);
+				}
+				printf('</select>');
+			}
 
 			if ( $type != 'hidden' ) {
 				if ( $info ) {
@@ -164,7 +176,7 @@ class ic_Plugin {
 
 class ic_BeSocial extends ic_Plugin {
 
-	var $version	= '1.3.2';
+	var $version	= '1.3.3';
 	var $buttons	= array('meneame', 'bitacoras', 'facebook', 'twitter');
 	var $objects	= array();
 
@@ -180,9 +192,11 @@ class ic_BeSocial extends ic_Plugin {
 		load_plugin_textdomain('besocial', false, $this->getPath('lang'));
 
 		add_action('admin_menu', array(&$this, 'initAdmin'));
-		add_action('wp_enqueue_scripts', array(&$this, 'initButtons'));
+		add_action('wp_enqueue_scripts', array(&$this, 'initButtons'), 9999);
 		add_action('the_content', array(&$this, 'showButtons'), 9999);
 
+		$this->addOption('position', array('label' => __('Position', 'besocial'), 'type' => 'select', 'value' => 'bottom', 'enum' => array('bottom' => __('Bottom', 'besocial'), 'top' => __('Top', 'besocial'), 'none' => __('None', 'besocial')), 'info' => __('If "None" is selected you must use <code>ic_BeSocial_Buttons()</code> in <code>single.php</code>', 'besocial')));
+		$this->addOption('alignment', array('label' => __('Alignment', 'besocial'), 'type' => 'select', 'value' => 'center', 'enum' => array('center' => __('Center', 'besocial'), 'left' => __('Left', 'besocial'), 'right' => __('Right', 'besocial'))));
 		$this->addOption('counters', array('label' => __('Show counters', 'besocial'), 'type' => 'checkbox', 'value' => true));
 
 		foreach ( $this->buttons as $name ) {
@@ -287,7 +301,6 @@ class ic_BeSocial extends ic_Plugin {
 			if ( $post->post_status == 'publish' && $post->post_password == '' ) {
 				$data = array(
 					'ID'	=> $post->ID,
-					'date'	=> $post->post_date,
 					'title'	=> get_the_title(),
 					'url'	=> get_permalink()
 				);
@@ -334,16 +347,25 @@ class ic_BeSocial extends ic_Plugin {
 	 *
 	 * @param string $content El contenido del post
 	 */
-	function showButtons( $content = '' ) {
-		$buttons = '';
+	function showButtons( $content = '', $manual = false ) {
+		$position = $this->getOption('position');
+		$alignment = $this->getOption('alignment');
 
-		foreach ( $this->buttons as $name ) {
-			$button =& $this->getButton($name);
-			$buttons .= $button->toHTML('<li>', '</li>');
-		}
+		if ( (($position != 'none') && ($manual == false)) || (($position == 'none') && ($manual == true)) ) {
+			$buttons = '';
 
-		if ( !empty($buttons) ) {
-			$content .= '<div id="besocial"><ul>' . $buttons . '</ul></div>';
+			foreach ( $this->buttons as $name ) {
+				$button =& $this->getButton($name);
+				$buttons .= $button->toHTML('<li>', '</li>');
+			}
+
+			if ( !empty($buttons) ) {
+				if ( $position == 'top' ) {
+					$content = '<div id="besocial"><ul class="' . $alignment . '">' . $buttons . '</ul></div>' . $content;
+				} else {
+					$content .= '<div id="besocial"><ul class="' . $alignment . '">' . $buttons . '</ul></div>';
+				}
+			}
 		}
 
 		return $content;
@@ -508,7 +530,7 @@ class ic_BeSocial_Twitter extends ic_BeSocial_Button {
 	 */
 	function getAPI( $method, $param, $value ) {
 		if ( $this->getOption('login') && $this->getOption('apikey') ) {
-			return $this->getRemote('http://api.bit.ly/' . $method . '?version=2.0.1&login=' . $this->getOption('login') . '&apiKey=' . $this->getOption('apikey') . '&format=xml&' . $param . '=' . $value);
+			return $this->getRemote('http://api.bit.ly/' . $method . '?version=2.0.1&login=' . strtolower($this->getOption('login')) . '&apiKey=' . $this->getOption('apikey') . '&format=xml&' . $param . '=' . $value);
 		}
 
 		return '';
@@ -573,6 +595,11 @@ class ic_BeSocial_Meneame extends ic_BeSocial_Button {
 		$this->setTitle(__('Submit this to', 'besocial') . ' Meneame');
 		$this->setHref('http://www.meneame.net/submit.php?url=' . $post['url'] . '&amp;title=' . rawurlencode($post['title']));
 	}
+}
+
+function ic_BeSocial_Buttons() {
+	global $ic_besocial;
+	echo $ic_besocial->showButtons('', true);
 }
 
 $ic_besocial =& new ic_BeSocial();

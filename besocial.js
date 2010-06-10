@@ -74,7 +74,7 @@ BeSocial = Object.extend({
 		if (typeof BitlyClient === 'undefined') {
 			this.addScript('http://bit.ly/javascript-api.js?' + this.addQuery({
 				version: 'latest',
-				login: this.twitter_login,
+				login: this.twitter_login.toLowerCase(),
 				apiKey: this.twitter_apikey
 			}));
 
