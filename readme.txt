@@ -3,7 +3,7 @@ Contributors: Jose Cuesta
 Tags: social, share, button, facebook, twitter, meneame, bitacoras
 Requires at least: 2.9
 Tested up to: 2.9.2
-Stable tag: 1.3.3
+Stable tag: 1.3.4
 
 == Description ==
 
@@ -21,6 +21,9 @@ Los botones pueden ser insertados de manera automática (por defecto) o manualme
 Este plugin ha sido desarrollado por [Inercia Creativa](http://www.inerciacreativa.com/) para el [blog de Maikelnai](http://www.maikelnai.es) y liberado para uso y disfrute público.
 
 == Changelog ==
+
+= 1.3.4 =
+* Traducción al español
 
 = 1.3.3 =
 * Posibilidad de ajustar la posición y alineamiento de los botones
