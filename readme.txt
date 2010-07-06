@@ -3,7 +3,7 @@ Contributors: Jose Cuesta
 Tags: social, share, button, facebook, twitter, meneame, bitacoras
 Requires at least: 2.9
 Tested up to: 2.9.2
-Stable tag: 1.3.4
+Stable tag: 1.4
 
 == Description ==
 
@@ -16,11 +16,14 @@ Los botones pueden ser insertados de manera automática (por defecto) o manualme
 * **Meneame**: permite enviar la entrada a Meneame o votarla si ya ha sido enviada, pero si la entrada ha sido descartada en Meneame el botón no aparecerá. El contador muestra el número de votos (meneos).
 * **Bitacoras.com**: permite envitar la entrada a Bitacoras.com o votarla si ya ha sido enviada. El contador muestra el número de votos.
 * **Facebook**: permite compartir la entrada en Facebook. El contador muestra el número de gente que ha compartido la entrada y el número de gente que le gusta en Facebook.
-* **Twitter**: permite retweetear la entrada. El contador muestra el número de gente que ha accedido a la página mediante la URL corta de Bit.ly. Está basado en el [Easy Retweet Button](http://ejohn.org/blog/retweet/) de John Resig.
+* **Twitter**: permite retweetear la entrada. El contador muestra el número de retweets.
 
 Este plugin ha sido desarrollado por [Inercia Creativa](http://www.inerciacreativa.com/) para el [blog de Maikelnai](http://www.maikelnai.es) y liberado para uso y disfrute público.
 
 == Changelog ==
+
+= 1.4 =
+* Se utiliza Tweetmeme en vez de Bit.ly para contar RT en vez de clicks
 
 = 1.3.4 =
 * Traducción al español
