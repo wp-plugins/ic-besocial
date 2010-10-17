@@ -26,6 +26,7 @@ BeSocial = Object.extend({
 
 		script.charSet = 'utf-8';
 		script.src = source;
+		script.async = true;
 
 		(document.getElementsByTagName('HEAD')[0] || document.documentElement).appendChild(script);
 	},
@@ -39,7 +40,6 @@ BeSocial = Object.extend({
 		meta.appendChild(document.createTextNode('\u00A0'));
 
 		stat.className = 'besocial-stat';
-		//stat.appendChild(document.createTextNode(parseInt(count, 10)));
 		stat.appendChild(document.createTextNode(count));
 
 		button.appendChild(meta);
@@ -161,6 +161,36 @@ BeSocial = Object.extend({
 		}
 	},
 
+	deliciousAPI: function () {
+		this.addScript('http://feeds.delicious.com/v2/json/urlinfo/data?' + this.addQuery({
+			url: this.url,
+			callback: 'BeSocial.deliciousResponse'
+		}));
+	},
+
+	deliciousResponse: function (data) {
+		var count = 0;
+		if (data.length > 0) {
+			count = data[0].total_posts;
+		}
+		this.addCounter('delicious', count);
+	},
+
+	redditAPI: function () {
+		this.addScript('http://www.reddit.com/api/info.json?' + this.addQuery({
+			url: this.url,
+			jsonp: 'BeSocial.redditResponse'
+		}));
+	},
+
+	redditResponse: function (data) {
+		var count = 0;
+		if (data.data.children.length > 0) {
+			count = data.data.children[0].data.score
+		}
+		this.addCounter('reddit', count);
+	},
+
 	init: function () {
 		this.url = window.location.href.replace(/(?:#.*)?$/, '');
 
@@ -176,6 +206,12 @@ BeSocial = Object.extend({
 		}
 		if (this.meneame_active === '1') {
 			this.meneameAPI();
+		}
+		if (this.delicious_active === '1') {
+			this.deliciousAPI();
+		}
+		if (this.reddit_active === '1') {
+			this.redditAPI();
 		}
 	}
 }, BeSocial);

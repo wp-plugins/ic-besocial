@@ -2,9 +2,9 @@
 /*
 Plugin Name: ic BeSocial
 Plugin URI: http://wordpress.org/extend/plugins/ic-besocial/
-Description: Genera botones para el envío o la votación en distintas redes sociales: Facebook, Twitter, Meneame y Bitacoras.com. Opcionalmente puede mostrar contadores con el número de votos o veces que se ha compartido (según la red).
+Description: Genera botones para el envío o la votación en distintas redes sociales: Facebook, Twitter, Delicious, Reddit, Meneame y Bitacoras.com. Opcionalmente puede mostrar contadores con el número de votos o veces que se ha compartido (según la red).
 Author: Jose Cuesta
-Version: 1.4
+Version: 1.5
 Author URI: http://www.inerciacreativa.com/
 */
 
@@ -176,8 +176,8 @@ class ic_Plugin {
 
 class ic_BeSocial extends ic_Plugin {
 
-	var $version	= '1.4';
-	var $buttons	= array('meneame', 'bitacoras', 'facebook', 'twitter');
+	var $version	= '1.5';
+	var $buttons	= array('meneame', 'bitacoras', 'reddit', 'delicious', 'facebook', 'twitter');
 	var $objects	= array();
 
 	var $path		= '';
@@ -301,7 +301,8 @@ class ic_BeSocial extends ic_Plugin {
 			if ( $post->post_status == 'publish' && $post->post_password == '' ) {
 				$data = array(
 					'ID'	=> $post->ID,
-					'title'	=> get_the_title(),
+					'title'	=> str_replace(array('&#8220;', '&#8221;'), "'", get_the_title()),
+					'title'	=> $post->post_title,
 					'url'	=> get_permalink()
 				);
 			}
@@ -453,7 +454,7 @@ class ic_BeSocial_Button extends ic_Plugin {
 	function getRemote( $url ) {
 		$response = wp_remote_request($url);
 
-		if ( ($response['response']['code'] >= 200) && ($response['response']['code'] < 300) ) {
+		if ( is_array($response) && ($response['response']['code'] >= 200) && ($response['response']['code'] < 300) ) {
 			return $response['body'];
 		}
 
@@ -549,6 +550,9 @@ class ic_BeSocial_Twitter extends ic_BeSocial_Button {
 		$short = '';
 		if ( $post->post_status == 'publish' ) {
 			$short = $this->getShortURL($post->ID, get_permalink());
+			if (!$short) {
+				$short = 'Error!';
+			}
 		}
 
 		echo '<label for="besocial-shorturl">', __('Bit.ly URL', 'besocial'), '</label> ';
@@ -594,6 +598,32 @@ class ic_BeSocial_Meneame extends ic_BeSocial_Button {
 		$this->setText('Meneame');
 		$this->setTitle(__('Submit this to', 'besocial') . ' Meneame');
 		$this->setHref('http://www.meneame.net/submit.php?url=' . $post['url'] . '&amp;title=' . rawurlencode($post['title']));
+	}
+}
+
+class ic_BeSocial_Delicious extends ic_BeSocial_Button {
+
+	function init() {
+		parent::init();
+	}
+
+	function initButton( $post ) {
+		$this->setText('Delicious');
+		$this->setTitle(__('Bookmark this in', 'besocial') . ' Delicious');
+		$this->setHref('http://www.delicious.com/save?v=5&amp;noui&amp;url=' . $post['url'] . '&amp;title=' . rawurlencode($post['title']));
+	}
+}
+
+class ic_BeSocial_Reddit extends ic_BeSocial_Button {
+
+	function init() {
+		parent::init();
+	}
+
+	function initButton( $post ) {
+		$this->setText('Reddit');
+		$this->setTitle(__('Submit this to', 'besocial') . ' Reddit');
+		$this->setHref('http://www.reddit.com/submit?url=' . $post['url'] . '&amp;title=' . rawurlencode($post['title']));
 	}
 }
 
