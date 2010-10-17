@@ -73,34 +73,7 @@ BeSocial = Object.extend({
 
 		this.addCounter('facebook', count);
 	},
-/*
-	bitlyAPI: function () {
-		if (typeof BitlyClient === 'undefined') {
-			this.addScript('http://bit.ly/javascript-api.js?' + this.addQuery({
-				version: 'latest',
-				login: this.twitter_login.toLowerCase(),
-				apiKey: this.twitter_apikey
-			}));
 
-			var check = setInterval(function () {
-				if (typeof BitlyCB !== 'undefined') {
-					clearInterval(check);
-					BeSocial.bitlyResponse();
-				}
-			}, 10);
-		} else {
-			this.bitlyResponse();
-		}
-	},
-
-	bitlyResponse: function () {
-		BitlyCB.response = function (data) {
-			BeSocial.addCounter('twitter', data.results.clicks);
-		};
-
-		BitlyClient.stats(this.twitter_url, 'BitlyCB.response');
-	},
-*/
 	tweetmemeAPI: function () {
 		this.addScript('http://api.tweetmeme.com/url_info.jsonc?' + this.addQuery({
 			url: this.url,
@@ -186,16 +159,30 @@ BeSocial = Object.extend({
 	redditResponse: function (data) {
 		var count = 0;
 		if (data.data.children.length > 0) {
-			count = data.data.children[0].data.score
+			count = data.data.children[0].data.score;
 		}
 		this.addCounter('reddit', count);
+	},
+
+	buzzAPI: function () {
+		this.addScript('http://www.google.com/buzz/api/buzzThis/buzzCounter?' + this.addQuery({
+			url: this.url,
+			callback: 'BeSocial.buzzResponse'
+		}));
+	},
+
+	buzzResponse: function (data) {
+		var count = 0;
+		if (data[this.url] > 0) {
+			count = data[this.url];
+		}
+		this.addCounter('buzz', count);
 	},
 
 	init: function () {
 		this.url = window.location.href.replace(/(?:#.*)?$/, '');
 
 		if (this.twitter_active === '1') {
-			//this.bitlyAPI();
 			this.tweetmemeAPI();
 		}
 		if (this.facebook_active === '1') {
@@ -212,6 +199,9 @@ BeSocial = Object.extend({
 		}
 		if (this.reddit_active === '1') {
 			this.redditAPI();
+		}
+		if (this.buzz_active === '1') {
+			this.buzzAPI();
 		}
 	}
 }, BeSocial);

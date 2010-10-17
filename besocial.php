@@ -2,9 +2,9 @@
 /*
 Plugin Name: ic BeSocial
 Plugin URI: http://wordpress.org/extend/plugins/ic-besocial/
-Description: Genera botones para el envío o la votación en distintas redes sociales: Facebook, Twitter, Delicious, Reddit, Meneame y Bitacoras.com. Opcionalmente puede mostrar contadores con el número de votos o veces que se ha compartido (según la red).
+Description: Genera botones para el envío o la votación en distintas redes sociales: Facebook, Twitter, Google Buzz, Delicious, Reddit, Meneame y Bitacoras.com. Opcionalmente puede mostrar contadores con el número de votos o veces que se ha compartido (según la red).
 Author: Jose Cuesta
-Version: 1.5
+Version: 1.6
 Author URI: http://www.inerciacreativa.com/
 */
 
@@ -177,7 +177,7 @@ class ic_Plugin {
 class ic_BeSocial extends ic_Plugin {
 
 	var $version	= '1.5';
-	var $buttons	= array('meneame', 'bitacoras', 'reddit', 'delicious', 'facebook', 'twitter');
+	var $buttons	= array('meneame', 'bitacoras', 'reddit', 'delicious', 'buzz', 'facebook', 'twitter');
 	var $objects	= array();
 
 	var $path		= '';
@@ -624,6 +624,19 @@ class ic_BeSocial_Reddit extends ic_BeSocial_Button {
 		$this->setText('Reddit');
 		$this->setTitle(__('Submit this to', 'besocial') . ' Reddit');
 		$this->setHref('http://www.reddit.com/submit?url=' . $post['url'] . '&amp;title=' . rawurlencode($post['title']));
+	}
+}
+
+class ic_BeSocial_Buzz extends ic_BeSocial_Button {
+
+	function init() {
+		parent::init();
+	}
+
+	function initButton( $post ) {
+		$this->setText('Google Buzz');
+		$this->setTitle(__('Share this on', 'besocial') . ' Google Buzz');
+		$this->setHref('http://www.google.com/buzz/post?url=' . $post['url'] . '&amp;message=' . rawurlencode(get_bloginfo('name') . ': ' . $post['title']));
 	}
 }
 

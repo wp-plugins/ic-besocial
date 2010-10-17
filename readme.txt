@@ -1,9 +1,9 @@
 === ic BeSocial ===
 Contributors: Jose Cuesta
-Tags: social, share, button, facebook, twitter, meneame, bitacoras, delicious, reddit
+Tags: social, share, button, facebook, twitter, meneame, bitacoras, delicious, reddit, google buzz
 Requires at least: 2.9
 Tested up to: 3.0.1
-Stable tag: 1.5
+Stable tag: 1.6
 
 == Description ==
 
@@ -17,12 +17,16 @@ Los botones pueden ser insertados de manera automática (por defecto) o manualme
 * **Bitacoras.com**: permite enviar la entrada a Bitacoras.com o votarla si ya ha sido enviada. El contador muestra el número de votos.
 * **Reddit**: permite enviar la entrada a Reddit o votarla si ya ha sido enviada. El contador muestra la puntuación.
 * **Delicious**: permite guardar el marcador de la entrada en Delicious. El contador muestra el número de veces que ha sido guardado.
+* **Google Buzz**: permite compartir la entrada en Google Buzz. El contador muestra el número de veces que ha sido compartido.
 * **Facebook**: permite compartir la entrada en Facebook. El contador muestra el número de gente que ha compartido la entrada y el número de gente que le gusta en Facebook.
 * **Twitter**: permite retweetear la entrada. El contador muestra el número de retweets.
 
 Este plugin ha sido desarrollado por [Inercia Creativa](http://www.inerciacreativa.com/) para el [blog de Maikelnai](http://www.maikelnai.es) y liberado para uso y disfrute público.
 
 == Changelog ==
+
+= 1.6 =
+* Se incluye botón para Google Buzz
 
 = 1.5 =
 * Se incluyen botones para Delicious y Reddit

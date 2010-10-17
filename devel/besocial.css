@@ -60,7 +60,7 @@
 	padding: 0;
 	text-indent: -99em;
 	color: #FFF;
-	background-image: url(besocial.png);
+	background-image: url(besocial.png?v1.6);
 	background-repeat: no-repeat;
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
@@ -83,6 +83,10 @@
 	border-color: #BBBBBB;
 	background-position: -128px 0px;
 }
+#besocial-buzz .besocial-text {
+	border-color: #208EF5;
+	background-position: -224px 0px;
+}
 #besocial-facebook .besocial-text {
 	border-color: #7592D4;
 	background-position: -160px 0px;
@@ -94,7 +98,7 @@
 #besocial .besocial-meta {
 	width: 8px;
 	padding: 2px 0 3px;
-	background: url(besocial.png) -6px 20% no-repeat;
+	background: url(besocial.png?v1.6) -6px 20% no-repeat;
 }
 #besocial .besocial-stat {
 	border: 1px solid #AAA;
