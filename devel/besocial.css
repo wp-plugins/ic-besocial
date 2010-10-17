@@ -1,0 +1,111 @@
+#besocial {
+	overflow: hidden;
+	clear: both;
+	position: relative;
+	z-index: 10;
+	width: 100%;
+}
+#besocial ul {
+	margin: 10px 0 !important;
+	padding: 0 !important;
+	width: 100% !important;
+	list-style: none !important;
+}
+#besocial ul.center {
+	text-align: center;
+}
+#besocial ul.center li {
+	display: inline;
+	margin: 0;
+	padding: 0 5px;
+}
+#besocial ul.left li {
+	float: left;
+	margin: 0 10px 0 0;
+}
+#besocial ul.right li {
+	float: right;
+	margin: 0 0 0 10px;
+}
+#besocial li {
+	border: none !important;
+	padding: 0;
+	text-indent: 0;
+	background: none !important;
+}
+#besocial li:before {
+	content: '';
+}
+#besocial a {
+	display: -moz-inline-stack;
+	display: inline-block;
+	text-decoration: none;
+}
+#besocial a:hover {
+	background: none;
+	text-decoration: none;
+}
+#besocial span {
+	float: left;
+	padding: 1px 8px 2px;
+	font: 10px/15px Arial, sans-serif;
+	text-indent: 0;
+	cursor: pointer;
+}
+#besocial .besocial-text {
+	float: left;
+	overflow: hidden;
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	text-indent: -99em;
+	color: #FFF;
+	background-image: url(besocial.png);
+	background-repeat: no-repeat;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+	border: 1px solid #555;
+}
+#besocial-meneame .besocial-text {
+	border-color: #FF6400;
+	background-position: -32px 0px;
+}
+#besocial-bitacoras .besocial-text {
+	border-color: #2378BF;
+	background-position: -64px 0px;
+}
+#besocial-reddit .besocial-text {
+	border-color: #5F99CF;
+	background-position: -96px 0px;
+}
+#besocial-delicious .besocial-text {
+	border-color: #BBBBBB;
+	background-position: -128px 0px;
+}
+#besocial-facebook .besocial-text {
+	border-color: #7592D4;
+	background-position: -160px 0px;
+}
+#besocial-twitter .besocial-text {
+	border-color: #5599BB;
+	background-position: -192px 0px;
+}
+#besocial .besocial-meta {
+	width: 8px;
+	padding: 2px 0 3px;
+	background: url(besocial.png) -6px 20% no-repeat;
+}
+#besocial .besocial-stat {
+	border: 1px solid #AAA;
+	border-left: none;
+	padding: 1px 4px 2px;
+	background: #DDD;
+	color: #555;
+}
+#besocial a:hover .besocial-meta {
+	background-position: -16px 20%;
+}
+#besocial a:hover .besocial-stat {
+	background: #FFF;
+}
