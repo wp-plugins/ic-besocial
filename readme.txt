@@ -1,29 +1,37 @@
 === ic BeSocial ===
 Contributors: Jose Cuesta
-Tags: social, share, button, facebook, twitter, meneame, bitacoras, delicious, reddit, google buzz
+Tags: social, share, button, facebook, twitter, meneame, bitacoras, delicious, reddit, google buzz, divulgame, divoblogger
 Requires at least: 2.9
-Tested up to: 3.0.1
-Stable tag: 1.6
+Tested up to: 3.1.2
+Stable tag: 2.0
 
 == Description ==
 
-Genera botones para el envío o la votación en distintas redes sociales: Facebook, Twitter, Delicious, Reddit, Meneame y Bitacoras.com. Opcionalmente puede mostrar contadores con el número de votos o veces que se ha compartido (según la red). Los botones se muestran únicamente en las entradas individuales.
+Genera botones para el envío o la votación en distintas redes sociales: Facebook, Twitter, Delicious, Reddit, Meneame y Bitacoras.com. Opcionalmente puede mostrar contadores con el número de votos o veces que se ha compartido (según la red).
 
 También genera automáticamente las URLs cortas mediante Bit.ly al publicar las entradas (aparecen en una caja de la pantalla de edición para poder consultarlas).
 
 Los botones pueden ser insertados de manera automática (por defecto) o manualmente (mediante la función `ic_BeSocial_Buttons()` en single.php), y funcionan de la siguiente manera:
 
-* **Meneame**: permite enviar la entrada a Meneame o votarla si ya ha sido enviada, pero si la entrada ha sido descartada en Meneame el botón no aparecerá. El contador muestra el número de votos (meneos).
+* **Meneame**: permite enviar la entrada a Meneame o votarla si ya ha sido enviada, pero si la entrada ha sido descartada el botón no aparecerá. El contador muestra el número de votos (meneos).
 * **Bitacoras.com**: permite enviar la entrada a Bitacoras.com o votarla si ya ha sido enviada. El contador muestra el número de votos.
 * **Reddit**: permite enviar la entrada a Reddit o votarla si ya ha sido enviada. El contador muestra la puntuación.
 * **Delicious**: permite guardar el marcador de la entrada en Delicious. El contador muestra el número de veces que ha sido guardado.
 * **Google Buzz**: permite compartir la entrada en Google Buzz. El contador muestra el número de veces que ha sido compartido.
 * **Facebook**: permite compartir la entrada en Facebook. El contador muestra el número de gente que ha compartido la entrada y el número de gente que le gusta en Facebook.
 * **Twitter**: permite retweetear la entrada. El contador muestra el número de retweets.
+* **Divúlgame**: permite enviar la entrada a Divúlgame o votarla si ya ha sido enviada, pero si la entrada ha sido descartada el botón no aparecerá. El contador muestra el número de votos.
+* **Divoblogger**: permite enviar la entrada a Divoblogger o votarla si ya ha sido enviada, pero si la entrada ha sido descartada el botón no aparecerá. El contador muestra el número de votos.
 
-Este plugin ha sido desarrollado por [Inercia Creativa](http://www.inerciacreativa.com/) para el [blog de Maikelnai](http://www.maikelnai.es) y liberado para uso y disfrute público.
+**Los contadores sólo pueden aparecer en las entradas individuales o en las páginas**. Esto es debido a que todas las APIs utilizadas tienen limitaciones en cuanto al número de consultas que pueden hacerse en un tiempo determinado.
+
+Este plugin ha sido desarrollado por [Inercia Creativa](http://www.inerciacreativa.com/) para el [blog de Maikelnai](http://maikelnai.elcomercio.es/) y liberado para uso y disfrute público.
 
 == Changelog ==
+
+= 2.0 =
+* Se incluyen botones para Divúlgame y Divoblogger
+* Posibilidad de mostrar los botones en el índice, archivos y páginas del blog
 
 = 1.6 =
 * Se incluye botón para Google Buzz

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ic BeSocial\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-17 09:51+0100\n"
-"PO-Revision-Date: 2010-10-17 09:52+0100\n"
+"POT-Creation-Date: 2011-05-12 18:13+0100\n"
+"PO-Revision-Date: 2011-05-12 18:21+0100\n"
 "Last-Translator: Jose Cuesta <jose.cuesta@inerciacreativa.com>\n"
 "Language-Team: Inercia Creativa <info@inerciacreativa.com>\n"
 "MIME-Version: 1.0\n"
@@ -19,104 +19,147 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-Basepath: .\n"
-"X-Poedit-SearchPath-0: ..\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: ..\n"
 
-#: ../besocial.php:198
+#: ../besocial.php:202
+msgid "Use default styles"
+msgstr "Usar estilos por defecto"
+
+#: ../besocial.php:202
+msgid "Uncheck if you want to style the buttons by yourself"
+msgstr "Si quieres personalizar los botones quita la marca"
+
+#: ../besocial.php:203
 msgid "Position"
 msgstr "Posición"
 
-#: ../besocial.php:198
+#: ../besocial.php:203
 msgid "Bottom"
 msgstr "Debajo"
 
-#: ../besocial.php:198
+#: ../besocial.php:203
 msgid "Top"
 msgstr "Arriba"
 
-#: ../besocial.php:198
+#: ../besocial.php:203
 msgid "None"
 msgstr "Ninguna"
 
-#: ../besocial.php:198
-msgid "If \"None\" is selected you must use <code>ic_BeSocial_Buttons()</code> in <code>single.php</code>"
-msgstr "Si seleccionas \"Ninguna\" debes usar la función <code>ic_BeSocial_Buttons()</code> en la plantilla <code>single.php</code>"
+#: ../besocial.php:203
+msgid "If \"None\" is selected you must use <code>ic_BeSocial_Buttons()</code> to show the buttons"
+msgstr "Si seleccionas \"Ninguna\" debes usar la función <code>ic_BeSocial_Buttons()</code> para mostrar los botones"
 
-#: ../besocial.php:199
+#: ../besocial.php:204
 msgid "Alignment"
 msgstr "Alineación"
 
-#: ../besocial.php:199
+#: ../besocial.php:204
 msgid "Center"
 msgstr "Centrado"
 
-#: ../besocial.php:199
+#: ../besocial.php:204
 msgid "Left"
 msgstr "Izquierda"
 
-#: ../besocial.php:199
+#: ../besocial.php:204
 msgid "Right"
 msgstr "Derecha"
 
-#: ../besocial.php:200
-msgid "Show counters"
-msgstr "Mostrar contadores"
+#: ../besocial.php:205
+msgid "Show on posts"
+msgstr "Mostrar en entradas"
 
-#: ../besocial.php:239
+#: ../besocial.php:205
+#: ../besocial.php:206
+msgid "Show with counters"
+msgstr "Mostrar con contadores"
+
+#: ../besocial.php:205
+#: ../besocial.php:206
+#: ../besocial.php:207
+#: ../besocial.php:208
+msgid "Show"
+msgstr "Mostrar"
+
+#: ../besocial.php:205
+#: ../besocial.php:206
+#: ../besocial.php:207
+#: ../besocial.php:208
+msgid "Hide"
+msgstr "Ocultar"
+
+#: ../besocial.php:206
+msgid "Show on pages"
+msgstr "Mostrar en páginas"
+
+#: ../besocial.php:207
+msgid "Show on index"
+msgstr "Mostrar en el índice"
+
+#: ../besocial.php:208
+msgid "Show on archives"
+msgstr "Mostrar en archivos"
+
+#: ../besocial.php:244
 msgid "Configure"
 msgstr "Configurar"
 
-#: ../besocial.php:242
+#: ../besocial.php:247
 msgid "Options saved"
 msgstr "Opciones guardadas"
 
-#: ../besocial.php:254
+#: ../besocial.php:259
 msgid "Update"
 msgstr "Actualizar"
 
-#: ../besocial.php:391
+#: ../besocial.php:439
 msgid "Active"
 msgstr "Activo"
 
-#: ../besocial.php:491
+#: ../besocial.php:540
 msgid "Twitter username"
 msgstr "Nombre de usuario"
 
-#: ../besocial.php:492
+#: ../besocial.php:541
 msgid "Bit.ly username"
 msgstr "Nombre de usuario de Bit.ly"
 
-#: ../besocial.php:493
+#: ../besocial.php:542
 msgid "Bit.ly API key"
 msgstr "Clave API de Bit.ly"
 
-#: ../besocial.php:493
-#: ../besocial.php:581
+#: ../besocial.php:542
+#: ../besocial.php:630
 msgid "Found here:"
 msgstr "Puedes encontrarla aquí:"
 
-#: ../besocial.php:500
+#: ../besocial.php:549
 msgid "Retweet this"
 msgstr "Retwittea esto"
 
-#: ../besocial.php:558
+#: ../besocial.php:607
 msgid "Bit.ly URL"
 msgstr "URL de Bit.ly"
 
-#: ../besocial.php:571
+#: ../besocial.php:620
+#: ../besocial.php:713
 msgid "Share this on"
 msgstr "Compartir la entrada en"
 
-#: ../besocial.php:581
+#: ../besocial.php:630
 msgid "API key"
 msgstr "Clave API"
 
-#: ../besocial.php:586
-#: ../besocial.php:599
-#: ../besocial.php:625
+#: ../besocial.php:635
+#: ../besocial.php:648
+#: ../besocial.php:661
+#: ../besocial.php:674
+#: ../besocial.php:700
 msgid "Submit this to"
 msgstr "Enviar la entrada a"
 
-#: ../besocial.php:612
+#: ../besocial.php:687
 msgid "Bookmark this in"
-msgstr "Guardar como marcador en"
+msgstr "Guardar la entrada en"
 

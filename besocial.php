@@ -4,7 +4,7 @@ Plugin Name: ic BeSocial
 Plugin URI: http://wordpress.org/extend/plugins/ic-besocial/
 Description: Genera botones para el envío o la votación en distintas redes sociales: Facebook, Twitter, Google Buzz, Delicious, Reddit, Meneame y Bitacoras.com. Opcionalmente puede mostrar contadores con el número de votos o veces que se ha compartido (según la red).
 Author: Jose Cuesta
-Version: 1.6
+Version: 2.0(beta)
 Author URI: http://www.inerciacreativa.com/
 */
 
@@ -45,7 +45,7 @@ class ic_Plugin {
 	function addOption( $name, $option ) {
 		$default = array(
 			'permanent'	=> true,
-			'export'	=> true,
+			'export'	=> false,
 			'type'		=> 'text',
 			'value'		=> '',
 			'label'		=> '',
@@ -176,12 +176,17 @@ class ic_Plugin {
 
 class ic_BeSocial extends ic_Plugin {
 
-	var $version	= '1.5';
-	var $buttons	= array('meneame', 'bitacoras', 'reddit', 'delicious', 'buzz', 'facebook', 'twitter');
+	var $version	= '2.0';
+	var $buttons	= array('meneame', 'divulgame', 'divoblogger', 'bitacoras', 'reddit', 'delicious', 'buzz', 'facebook', 'twitter');
 	var $objects	= array();
+
+	var $active		= false;
+	var $mode		= '';
 
 	var $path		= '';
 	var $uri		= '';
+
+	var $devel		= false;
 
 	function init() {
 		parent::init();
@@ -192,16 +197,16 @@ class ic_BeSocial extends ic_Plugin {
 		load_plugin_textdomain('besocial', false, $this->getPath('lang'));
 
 		add_action('admin_menu', array(&$this, 'initAdmin'));
-		add_action('wp_enqueue_scripts', array(&$this, 'initButtons'), 9999);
-		add_action('the_content', array(&$this, 'showButtons'), 9999);
+		add_action('wp', array(&$this, 'initButtons'), 20);
 
-		$this->addOption('position', array('label' => __('Position', 'besocial'), 'type' => 'select', 'value' => 'bottom', 'enum' => array('bottom' => __('Bottom', 'besocial'), 'top' => __('Top', 'besocial'), 'none' => __('None', 'besocial')), 'info' => __('If "None" is selected you must use <code>ic_BeSocial_Buttons()</code> in <code>single.php</code>', 'besocial')));
+		$this->addOption('styles', array('label' => __('Use default styles', 'besocial'), 'type' => 'checkbox', 'value' => 1, 'info' => __('Uncheck if you want to style the buttons by yourself', 'besocial')));
+		$this->addOption('position', array('label' => __('Position', 'besocial'), 'type' => 'select', 'value' => 'bottom', 'enum' => array('bottom' => __('Bottom', 'besocial'), 'top' => __('Top', 'besocial'), 'none' => __('None', 'besocial')), 'info' => __('If "None" is selected you must use <code>ic_BeSocial_Buttons()</code> to show the buttons', 'besocial')));
 		$this->addOption('alignment', array('label' => __('Alignment', 'besocial'), 'type' => 'select', 'value' => 'center', 'enum' => array('center' => __('Center', 'besocial'), 'left' => __('Left', 'besocial'), 'right' => __('Right', 'besocial'))));
-		$this->addOption('counters', array('label' => __('Show counters', 'besocial'), 'type' => 'checkbox', 'value' => true));
-
-		foreach ( $this->buttons as $name ) {
-			$this->getButton($name);
-		}
+		$this->addOption('posts', array('label' => __('Show on posts', 'besocial'), 'type' => 'select', 'value' => 'counters', 'enum' => array('counters' => __('Show with counters', 'besocial'), 'show' => __('Show', 'besocial'), 'hide' => __('Hide', 'besocial'))));
+		$this->addOption('pages', array('label' => __('Show on pages', 'besocial'), 'type' => 'select', 'value' => 'counters', 'enum' => array('counters' => __('Show with counters', 'besocial'), 'show' => __('Show', 'besocial'), 'hide' => __('Hide', 'besocial'))));
+		$this->addOption('index', array('label' => __('Show on index', 'besocial'), 'type' => 'select', 'value' => 'show', 'enum' => array('show' => __('Show', 'besocial'), 'hide' => __('Hide', 'besocial'))));
+		$this->addOption('archive', array('label' => __('Show on archives', 'besocial'), 'type' => 'select', 'value' => 'show', 'enum' => array('show' => __('Show', 'besocial'), 'hide' => __('Hide', 'besocial'))));
+		//$this->addOption('feed', array('label' => __('Show on feed', 'besocial'), 'type' => 'select', 'value' => 'show', 'enum' => array('show' => __('Show', 'besocial'), 'hide' => __('Hide', 'besocial'))));
 	}
 
 	function getPath( $file ) {
@@ -217,7 +222,7 @@ class ic_BeSocial extends ic_Plugin {
 
 		if ( !isset($this->objects[$name]) ) {
 			$class = __CLASS__ . '_' . ucfirst($name);
-			$this->objects[$name] =& new $class($this->getOption('counters'));
+			$this->objects[$name] =& new $class();
 			return $this->objects[$name];
 		}
 
@@ -271,20 +276,61 @@ class ic_BeSocial extends ic_Plugin {
 		return $update;
 	}
 
+	function isActive() {
+		$mode = false;
+
+		if ( is_single() ) {
+			$mode = 'posts';
+		} elseif ( is_page() ) {
+			$mode = 'pages';
+		} elseif ( is_home() ) {
+			$mode = 'index';
+		} elseif ( is_archive() ) {
+			$mode = 'archive';
+		} elseif ( is_feed() ) {
+			//$mode = 'feed';
+		}
+
+		if ($mode) {
+			$this->mode = $this->getOption($mode);
+
+			if ($this->mode !== 'hide') {
+				$this->active = true;
+			}
+		}
+
+		return $this->active;
+	}
+
 	/**
 	 * Inicializa el plugin
 	 */
 	function initButtons() {
-		$post = $this->getPost();
+		if ( $this->isActive() ) {
+			//if ( is_feed() ) {
+				//add_action('the_content_feed', array(&$this, 'showButtons'), 20);
+			//} else {
+				add_action('the_content', array(&$this, 'showButtons'), 20);
+			//}
 
-		if ( !empty($post) ) {
-			$vars = array();
-			foreach ( $this->buttons as $name ) {
-				$button =& $this->getButton($name);
-				$vars = array_merge($vars, $button->setPost($post));
-			}
 			$this->getStyles();
-			$this->getScripts($vars);
+
+			if ( $this->mode === 'counters' ) {
+				the_post();
+
+				$vars = array();
+				$post = $this->getPost();
+
+				foreach ( $this->buttons as $name ) {
+					$button =& $this->getButton($name);
+					$button->setPost($post, false);
+					$vars = array_merge($vars, $button->toJS($post));
+				}
+
+				$this->getScripts($vars);
+
+				rewind_posts();
+			}
 		}
 	}
 
@@ -296,17 +342,12 @@ class ic_BeSocial extends ic_Plugin {
 
 		$data = array();
 
-		if ( is_single() ) {
-			the_post();
-			if ( $post->post_status == 'publish' && $post->post_password == '' ) {
-				$data = array(
-					'ID'	=> $post->ID,
-					'title'	=> str_replace(array('&#8220;', '&#8221;'), "'", get_the_title()),
-					'title'	=> $post->post_title,
-					'url'	=> get_permalink()
-				);
-			}
-			rewind_posts();
+		if ( $post->post_status == 'publish' && $post->post_password == '' ) {
+			$data = array(
+				'ID'	=> $post->ID,
+				'title'	=> $post->post_title,
+				'url'	=> get_permalink()
+			);
 		}
 
 		return $data;
@@ -320,13 +361,18 @@ class ic_BeSocial extends ic_Plugin {
 	function getStyles() {
 		global $wptouch_plugin;
 
-		$file = 'besocial.css';
+		if ( $this->getOption('styles') ) {
+			$file = 'besocial.css';
+			$devel = ($this->devel) ? 'devel/' : '';
 
-		if ( is_a($wptouch_plugin, 'WPtouchPlugin') && $wptouch_plugin->desired_view == 'mobile' ) {
-			$file = 'besocial-mobile.css';
+			/*
+			if ( is_a($wptouch_plugin, 'WPtouchPlugin') && $wptouch_plugin->desired_view == 'mobile' ) {
+				$file = 'besocial-mobile.css';
+			}
+			*/
+
+			wp_enqueue_style('besocial', $this->getURI($devel . $file), false, $this->version, 'all');
 		}
-
-		wp_enqueue_style('besocial', $this->getURI($file), false, $this->version, 'all');
 	}
 
 	/**
@@ -337,10 +383,9 @@ class ic_BeSocial extends ic_Plugin {
 	function getScripts( $vars ) {
 		global $wp_scripts;
 
-		if ( $this->getOption('counters') ) {
-			wp_enqueue_script('besocial', $this->getURI('besocial.js'), array(), $this->version, true);
-			wp_localize_script('besocial', 'BeSocial', $vars);
-		}
+		$devel = ($this->devel) ? 'devel/' : '';
+		wp_enqueue_script('besocial', $this->getURI($devel . 'besocial.js'), array(), $this->version, true);
+		wp_localize_script('besocial', 'BeSocial', $vars);
 	}
 
 	/**
@@ -349,22 +394,26 @@ class ic_BeSocial extends ic_Plugin {
 	 * @param string $content El contenido del post
 	 */
 	function showButtons( $content = '', $manual = false ) {
-		$position = $this->getOption('position');
-		$alignment = $this->getOption('alignment');
+		global $wp_query, $wp_the_query;
 
-		if ( (($position != 'none') && ($manual == false)) || (($position == 'none') && ($manual == true)) ) {
-			$buttons = '';
+		if ( $manual || ($wp_query === $wp_the_query) ) {
+			$position = $this->getOption('position');
+			$alignment = $this->getOption('alignment');
 
-			foreach ( $this->buttons as $name ) {
-				$button =& $this->getButton($name);
-				$buttons .= $button->toHTML('<li>', '</li>');
-			}
+			if ( (($position != 'none') && ($manual == false)) || (($position == 'none') && ($manual == true)) ) {
+				$buttons = '';
+				foreach ( $this->buttons as $name ) {
+					$button =& $this->getButton($name);
+					$button->setPost($this->getPost());
+					$buttons .= $button->toHTML('<li>', '</li>');
+				}
 
-			if ( !empty($buttons) ) {
-				if ( $position == 'top' ) {
-					$content = '<div id="besocial"><ul class="' . $alignment . '">' . $buttons . '</ul></div>' . $content;
-				} else {
-					$content .= '<div id="besocial"><ul class="' . $alignment . '">' . $buttons . '</ul></div>';
+				if ( !empty($buttons) ) {
+					if ( $position == 'top' ) {
+						$content = '<div class="besocial"><ul class="' . $alignment . '">' . $buttons . '</ul></div>' . "\n" . $content;
+					} else {
+						$content .= "\n" . '<div class="besocial"><ul class="' . $alignment . '">' . $buttons . '</ul></div>';
+					}
 				}
 			}
 		}
@@ -375,13 +424,12 @@ class ic_BeSocial extends ic_Plugin {
 
 class ic_BeSocial_Button extends ic_Plugin {
 
-	var $count 		= false;
 	var $href		= '';
 	var $text		= '';
 	var $title		= '';
+	var $count		= 0;
 
-	function ic_BeSocial_Button( $count ) {
-		$this->count = $count;
+	function ic_BeSocial_Button() {
 		$this->init();
 	}
 
@@ -393,12 +441,13 @@ class ic_BeSocial_Button extends ic_Plugin {
 
 	function initButton( $post ) {}
 
-	function setPost( $post ) {
+	function setPost( $post, $count = true ) {
 		if ( $this->isActive() ) {
 			$this->initButton($post);
+			if ( $count ) {
+				++$this->count;
+			}
 		}
-
-		return $this->toJS();
 	}
 
 	function setHref( $href ) {
@@ -423,7 +472,7 @@ class ic_BeSocial_Button extends ic_Plugin {
 
 	function toHTML( $before = '', $after = '' ) {
 		if ( $this->isReady() ) {
-			$html = sprintf('<a id="besocial-%s" rel="nofollow" href="%s" title="%s"><span class="besocial-text">%s</span></a>', $this->name, $this->href, $this->title, $this->text);
+			$html = sprintf('<a class="besocial-%s" id="besocial-%s-%d" rel="nofollow" href="%s" title="%s"><span class="besocial-text">%s</span></a>', $this->name, $this->name, $this->count, $this->href, $this->title, $this->text);
 			return $before . $html . $after;
 		}
 
@@ -488,10 +537,10 @@ class ic_BeSocial_Twitter extends ic_BeSocial_Button {
 
 		add_action('admin_menu', array(&$this, 'initAdmin'));
 
-		$this->addOption('user', array('label' => __('Twitter username', 'besocial'), 'export' => false));
+		$this->addOption('user', array('label' => __('Twitter username', 'besocial')));
 		$this->addOption('login', array('label' => __('Bit.ly username', 'besocial'), 'value' => 'retweetjs'));
 		$this->addOption('apikey', array('label' => __('Bit.ly API key', 'besocial'), 'value' => 'R_6287c92ecaf9efc6f39e4f33bdbf80b1', 'info' => __('Found here:', 'besocial') . ' <a href="http://bit.ly/account/your_api_key" target="_blank">http://bit.ly/account/your_api_key</a>'));
-		$this->addOption('url', array('permanent' => false));
+		$this->addOption('url', array('permanent' => false, 'export' => true));
 	}
 
 	function initButton( $post ) {
@@ -578,7 +627,7 @@ class ic_BeSocial_Bitacoras extends ic_BeSocial_Button {
 	function init() {
 		parent::init();
 
-		$this->addOption('apikey', array('label' => __('API key', 'besocial'), 'value' => '5SDMPMTU4NROQVJNPMO65K21AZLXHIXZ', 'info' => __('Found here:', 'besocial') . ' <a href="http://bitacoras.com/dev/key" target="_blank">http://bitacoras.com/dev/key</a>'));
+		$this->addOption('apikey', array('label' => __('API key', 'besocial'), 'value' => '5SDMPMTU4NROQVJNPMO65K21AZLXHIXZ', 'info' => __('Found here:', 'besocial') . ' <a href="http://bitacoras.com/dev/key" target="_blank">http://bitacoras.com/dev/key</a>', 'export' => true));
 	}
 
 	function initButton( $post ) {
@@ -598,6 +647,32 @@ class ic_BeSocial_Meneame extends ic_BeSocial_Button {
 		$this->setText('Meneame');
 		$this->setTitle(__('Submit this to', 'besocial') . ' Meneame');
 		$this->setHref('http://www.meneame.net/submit.php?url=' . $post['url'] . '&amp;title=' . rawurlencode($post['title']));
+	}
+}
+
+class ic_BeSocial_Divulgame extends ic_BeSocial_Button {
+
+	function init() {
+		parent::init();
+	}
+
+	function initButton( $post ) {
+		$this->setText('Divúlgame');
+		$this->setTitle(__('Submit this to', 'besocial') . ' Divúlgame');
+		$this->setHref('http://www.divulgame.net/submit.php?url=' . $post['url'] . '&amp;title=' . rawurlencode($post['title']));
+	}
+}
+
+class ic_BeSocial_Divoblogger extends ic_BeSocial_Button {
+
+	function init() {
+		parent::init();
+	}
+
+	function initButton( $post ) {
+		$this->setText('Divoblogger');
+		$this->setTitle(__('Submit this to', 'besocial') . ' Divoblogger');
+		$this->setHref('http://divoblogger.com/submit.php?url=' . $post['url'] . '&amp;title=' . rawurlencode($post['title']));
 	}
 }
 

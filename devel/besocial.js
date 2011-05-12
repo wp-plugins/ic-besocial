@@ -1,39 +1,56 @@
-Object.extend = function (destination, source) {
-	for (var property in source) {
-		destination[property] = source[property];
+var BeSocial = (function (config) {
+
+	var url = window.location.href.replace(/(?:#.*)?$/, ''),
+		head = (document.getElementsByTagName('HEAD')[0] || document.documentElement),
+		network = null,
+		buttons = [],
+		scripts = [],
+		request = {},
+		response = {};
+
+	function getNetwork(id) {
+		var button = document.getElementById('besocial-' + id + '-1');
+		if (button === null) {
+			return false;
+		} else {
+			buttons[id] = button;
+			return true;
+		}
 	}
 
-    return destination;
-};
+	function cleanNetwork(id) {
+		head.removeChild(scripts[id]);
+		delete scripts[id];
+		delete buttons[id];
+	}
 
-BeSocial = Object.extend({
-	addQuery: function (params, separator, join) {
-		var query = [];
+	function buildQuery(url, params, separator, join) {
+		var query = [],
+			param = null;
 
 		separator = separator || '=';
 		join = join || '&';
 
-		for (var param in params) {
+		for (param in params) {
 			if (params[param]) {
 				query.push(param.toString() + separator + encodeURIComponent(params[param]));
 			}
 		}
-		return query.join(join);
-	},
 
-	addScript: function (source) {
-		var script = document.createElement('script');
+		return url + query.join(join);
+	}
 
-		script.charSet = 'utf-8';
-		script.src = source;
-		script.async = true;
+	function addScript(id, source) {
+		scripts[id] = document.createElement('script');
+		scripts[id].charSet = 'utf-8';
+		scripts[id].src = source;
+		scripts[id].async = true;
 
-		(document.getElementsByTagName('HEAD')[0] || document.documentElement).appendChild(script);
-	},
+		head.appendChild(scripts[id]);
+	}
 
-	addCounter: function (id, count) {
-		var button = document.getElementById('besocial-' + id),
-			meta = document.createElement('span'),
+	function addCounter(id, count) {
+		var meta = document.createElement('span'),
 			stat = document.createElement('span');
 
 		meta.className = 'besocial-meta';
@@ -42,168 +59,205 @@ BeSocial = Object.extend({
 		stat.className = 'besocial-stat';
 		stat.appendChild(document.createTextNode(count));
 
-		button.appendChild(meta);
-		button.appendChild(stat);
-		button.target = '_blank';
-	},
+		buttons[id].appendChild(meta);
+		buttons[id].appendChild(stat);
+		buttons[id].target = '_blank';
 
-	facebookAPI: function () {
-		var urls = [];
-		urls.push(this.url);
-		if (this.twitter_url !== '') {
-			urls.push(this.twitter_url);
-		}
+		cleanNetwork(id);
+	}
 
-		this.addScript('http://api.facebook.com/restserver.php?' + this.addQuery({
-			v: '1.0',
-			method: 'fql.query',
-			query: 'select total_count from link_stat where url in("' + urls.join('","') + '")',
-			format: 'json',
-			callback: 'BeSocial.facebookResponse'
-		}));
-	},
+	function parseMeneame(id, data) {
+		var result = '';
 
-	facebookResponse: function (data) {
-		var count = 0,
-			i = data.length - 1;
-
-		for (; i >= 0; i--) {
-			count += parseInt(data[i].total_count, 10);
-		}
-
-		this.addCounter('facebook', count);
-	},
-
-	tweetmemeAPI: function () {
-		this.addScript('http://api.tweetmeme.com/url_info.jsonc?' + this.addQuery({
-			url: this.url,
-			callback: 'BeSocial.tweetmemeResponse'
-		}));
-	},
-
-	tweetmemeResponse: function (data) {
-		var count = 0;
-
-		if (data.status === 'success') {
-			count = data.story.url_count || 0;
-		}
-
-		this.addCounter('twitter', count);
-	},
-
-	bitacorasAPI: function () {
-		this.addScript('http://api.bitacoras.com/anotacion/' + this.addQuery({
-			key: this.bitacoras_apikey,
-			url: this.url,
-			format: 'json',
-			callback: 'BeSocial.bitacorasResponse'
-		}, '/', '/'));
-	},
-
-	bitacorasResponse: function (data) {
-		var count = data.data.votos || 0;
-		this.addCounter('bitacoras', count);
-	},
-
-	meneameAPI: function () {
-		this.addScript('http://meneame.net/api/url.php?' + this.addQuery({
-			url: this.url,
-			jsonp: 'BeSocial.meneameResponse'
-		}));
-	},
-
-	meneameResponse: function (data) {
 		if (data.status === 'OK') {
-			var button = document.getElementById('besocial-meneame'),
-				item = button.parentNode,
+			var item = buttons[id].parentNode,
 				count = 0,
 				i = 0,
 				j = data.data.length;
 
 			for (; i < j; i++) {
 				if (data.data[i].status === 'published' || data.data[i].status === 'queued') {
-					button.href = data.data[i].url;
-					this.addCounter('meneame', data.data[i].votes + data.data[i].anonymous);
-					return;
+					buttons[id].href = data.data[i].url;
+					result = parseInt(data.data[i].votes, 10) + parseInt(data.data[i].anonymous, 10);
+					break;
 				}
 			}
 
-			item.parentNode.removeChild(item);
+			if (result === '') {
+				item.parentNode.removeChild(item);
+			}
 		} else {
-			this.addCounter('meneame', 0);
+			result = 0;
 		}
-	},
 
-	deliciousAPI: function () {
-		this.addScript('http://feeds.delicious.com/v2/json/urlinfo/data?' + this.addQuery({
-			url: this.url,
-			callback: 'BeSocial.deliciousResponse'
-		}));
-	},
+		return result;
+	}
 
-	deliciousResponse: function (data) {
-		var count = 0;
-		if (data.length > 0) {
-			count = data[0].total_posts;
-		}
-		this.addCounter('delicious', count);
-	},
+	request = {
+		facebook: function () {
+			var urls = [];
 
-	redditAPI: function () {
-		this.addScript('http://www.reddit.com/api/info.json?' + this.addQuery({
-			url: this.url,
-			jsonp: 'BeSocial.redditResponse'
-		}));
-	},
+			urls.push(url);
 
-	redditResponse: function (data) {
-		var count = 0;
-		if (data.data.children.length > 0) {
-			count = data.data.children[0].data.score;
-		}
-		this.addCounter('reddit', count);
-	},
+			if (config.twitter_url !== '') {
+				urls.push(config.twitter_url);
+			}
 
-	buzzAPI: function () {
-		this.addScript('http://www.google.com/buzz/api/buzzThis/buzzCounter?' + this.addQuery({
-			url: this.url,
-			callback: 'BeSocial.buzzResponse'
-		}));
-	},
+			addScript('facebook', buildQuery('http://api.facebook.com/restserver.php?', {
+				v: '1.0',
+				method: 'fql.query',
+				query: 'select total_count from link_stat where url in("' + urls.join('","') + '")',
+				format: 'json',
+				callback: 'BeSocial.facebook'
+			}));
+		},
 
-	buzzResponse: function (data) {
-		var count = 0;
-		if (data[this.url] > 0) {
-			count = data[this.url];
-		}
-		this.addCounter('buzz', count);
-	},
+		twitter: function () {
+			addScript('twitter', buildQuery('http://api.tweetmeme.com/url_info.jsonc?', {
+				url: url,
+				callback: 'BeSocial.twitter'
+			}));
+		},
 
-	init: function () {
-		this.url = window.location.href.replace(/(?:#.*)?$/, '');
+		reddit: function () {
+			addScript('reddit', buildQuery('http://www.reddit.com/api/info.json?', {
+				url: url,
+				jsonp: 'BeSocial.reddit'
+			}));
+		},
 
-		if (this.twitter_active === '1') {
-			this.tweetmemeAPI();
+		buzz: function () {
+			addScript('buzz', buildQuery('http://www.google.com/buzz/api/buzzThis/buzzCounter?', {
+				url: url,
+				callback: 'BeSocial.buzz'
+			}));
+		},
+
+		delicious: function () {
+			addScript('delicious', buildQuery('http://feeds.delicious.com/v2/json/urlinfo/data?', {
+				url: url,
+				callback: 'BeSocial.delicious'
+			}));
+		},
+
+		bitacoras: function () {
+			addScript('bitacoras', buildQuery('http://api.bitacoras.com/anotacion/', {
+				key: config.bitacoras_apikey,
+				url: url,
+				format: 'json',
+				callback: 'BeSocial.bitacoras'
+			}, '/', '/'));
+		},
+
+		meneame: function () {
+			addScript('meneame', buildQuery('http://www.meneame.net/api/url.php?', {
+				url: url,
+				jsonp: 'BeSocial.meneame'
+			}));
+		},
+
+		divulgame: function () {
+			addScript('divulgame', buildQuery('http://www.divulgame.net/api/url.php?', {
+				url: url,
+				jsonp: 'BeSocial.divulgame'
+			}));
+		},
+
+		divoblogger: function () {
+			addScript('divoblogger', buildQuery('http://divoblogger.com/api/url.php?', {
+				url: url,
+				jsonp: 'BeSocial.divoblogger'
+			}));
 		}
-		if (this.facebook_active === '1') {
-			this.facebookAPI();
+	};
+
+	response = {
+		facebook: function (data) {
+			var count = 0,
+				i = data.length - 1;
+
+			for (; i >= 0; i--) {
+				count += parseInt(data[i].total_count, 10);
+			}
+
+			addCounter('facebook', count);
+		},
+
+		twitter: function (data) {
+			var count = 0;
+
+			if (data.status === 'success') {
+				count = data.story.url_count || 0;
+			}
+
+			addCounter('twitter', count);
+		},
+
+		reddit: function (data) {
+			var count = 0;
+
+			if (data.data.children.length > 0) {
+				count = data.data.children[0].data.score;
+			}
+
+			addCounter('reddit', count);
+		},
+
+		buzz: function (data) {
+			var count = 0;
+
+			if (data[url] > 0) {
+				count = data[url];
+			}
+
+			addCounter('buzz', count);
+		},
+
+		delicious: function (data) {
+			var count = 0;
+
+			if (data.length > 0) {
+				count = data[0].total_posts;
+			}
+
+			addCounter('delicious', count);
+		},
+
+		bitacoras: function (data) {
+			var count = data.data.votos || 0;
+			addCounter('bitacoras', count);
+		},
+
+		meneame: function (data) {
+			var count = parseMeneame('meneame', data);
+
+			if (count !== '') {
+				addCounter('meneame', count);
+			}
+		},
+
+		divulgame: function (data) {
+			var count = parseMeneame('divulgame', data);
+
+			if (count !== '') {
+				addCounter('divulgame', count);
+			}
+		},
+
+		divoblogger: function (data) {
+			var count = parseMeneame('divoblogger', data);
+
+			if (count !== '') {
+				addCounter('divoblogger', count);
+			}
 		}
-		if (this.bitacoras_active === '1') {
-			this.bitacorasAPI();
-		}
-		if (this.meneame_active === '1') {
-			this.meneameAPI();
-		}
-		if (this.delicious_active === '1') {
-			this.deliciousAPI();
-		}
-		if (this.reddit_active === '1') {
-			this.redditAPI();
-		}
-		if (this.buzz_active === '1') {
-			this.buzzAPI();
+	};
+
+	for (network in request) {
+		if (getNetwork(network)) {
+			request[network]();
 		}
 	}
-}, BeSocial);
 
-BeSocial.init();
+	return response;
+}(BeSocial));
