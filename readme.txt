@@ -3,7 +3,7 @@ Contributors: Jose Cuesta
 Tags: social, share, button, facebook, twitter, meneame, bitacoras, delicious, reddit, google buzz, divulgame, divoblogger
 Requires at least: 2.9
 Tested up to: 3.1.2
-Stable tag: 2.0b
+Stable tag: 2.0c
 
 == Description ==
 

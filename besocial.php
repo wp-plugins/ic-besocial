@@ -4,7 +4,7 @@ Plugin Name: ic BeSocial
 Plugin URI: http://wordpress.org/extend/plugins/ic-besocial/
 Description: Genera botones para el envío o la votación en distintas redes sociales: Facebook, Twitter, Google Buzz, Delicious, Reddit, Meneame, Bitacoras.com, Divúlgame y Divoblogger. Opcionalmente puede mostrar contadores con el número de votos o veces que se ha compartido (según la red).
 Author: Jose Cuesta
-Version: 2.0b
+Version: 2.0c
 Author URI: http://www.inerciacreativa.com/
 */
 
@@ -427,7 +427,7 @@ class ic_BeSocial_Button extends ic_Plugin {
 	var $href		= '';
 	var $text		= '';
 	var $title		= '';
-	var $count		= -1;
+	var $count		= 0;
 
 	function ic_BeSocial_Button() {
 		$this->init();
@@ -445,7 +445,11 @@ class ic_BeSocial_Button extends ic_Plugin {
 		if ( $this->isActive() ) {
 			$this->initButton($post);
 			if ( $count ) {
-				++$this->count;
+				if (is_single()) {
+					$this->count = 1;
+				} else {
+					++$this->count;
+				}
 			}
 		}
 	}
