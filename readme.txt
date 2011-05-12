@@ -3,11 +3,11 @@ Contributors: Jose Cuesta
 Tags: social, share, button, facebook, twitter, meneame, bitacoras, delicious, reddit, google buzz, divulgame, divoblogger
 Requires at least: 2.9
 Tested up to: 3.1.2
-Stable tag: 2.0a
+Stable tag: 2.0b
 
 == Description ==
 
-Genera botones para el envío o la votación en distintas redes sociales: Facebook, Twitter, Delicious, Reddit, Meneame y Bitacoras.com. Opcionalmente puede mostrar contadores con el número de votos o veces que se ha compartido (según la red).
+Genera botones para el envío o la votación en distintas redes sociales: Facebook, Twitter, Delicious, Reddit, Meneame, Bitacoras.com, Divúlgame y Divoblogger. Opcionalmente puede mostrar contadores con el número de votos o veces que se ha compartido (según la red).
 
 También genera automáticamente las URLs cortas mediante Bit.ly al publicar las entradas (aparecen en una caja de la pantalla de edición para poder consultarlas).
 
