@@ -3,7 +3,7 @@ Contributors: Jose Cuesta
 Tags: social, share, button, facebook, twitter, meneame, bitacoras, delicious, reddit, google buzz, divulgame, divoblogger
 Requires at least: 2.9
 Tested up to: 3.1.2
-Stable tag: 2.0
+Stable tag: 2.0a
 
 == Description ==
 
@@ -29,7 +29,7 @@ Este plugin ha sido desarrollado por [Inercia Creativa](http://www.inerciacreati
 
 == Changelog ==
 
-= 2.0 =
+= 2.0a =
 * Se incluyen botones para Divúlgame y Divoblogger
 * Posibilidad de mostrar los botones en el índice, archivos y páginas del blog
 
