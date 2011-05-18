@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ic BeSocial\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-12 18:13+0100\n"
-"PO-Revision-Date: 2011-05-12 18:21+0100\n"
+"POT-Creation-Date: 2011-05-18 12:09+0100\n"
+"PO-Revision-Date: 2011-05-18 12:09+0100\n"
 "Last-Translator: Jose Cuesta <jose.cuesta@inerciacreativa.com>\n"
 "Language-Team: Inercia Creativa <info@inerciacreativa.com>\n"
 "MIME-Version: 1.0\n"
@@ -117,49 +117,45 @@ msgstr "Actualizar"
 msgid "Active"
 msgstr "Activo"
 
-#: ../besocial.php:540
+#: ../besocial.php:542
 msgid "Twitter username"
 msgstr "Nombre de usuario"
 
-#: ../besocial.php:541
-msgid "Bit.ly username"
-msgstr "Nombre de usuario de Bit.ly"
+#: ../besocial.php:551
+msgid "Tweet this"
+msgstr "Twittea esto"
 
-#: ../besocial.php:542
-msgid "Bit.ly API key"
-msgstr "Clave API de Bit.ly"
-
-#: ../besocial.php:542
-#: ../besocial.php:630
-msgid "Found here:"
-msgstr "Puedes encontrarla aquí:"
-
-#: ../besocial.php:549
-msgid "Retweet this"
-msgstr "Retwittea esto"
-
-#: ../besocial.php:607
+#: ../besocial.php:610
 msgid "Bit.ly URL"
 msgstr "URL de Bit.ly"
 
-#: ../besocial.php:620
-#: ../besocial.php:713
+#: ../besocial.php:623
+#: ../besocial.php:716
 msgid "Share this on"
 msgstr "Compartir la entrada en"
 
-#: ../besocial.php:630
+#: ../besocial.php:633
 msgid "API key"
 msgstr "Clave API"
 
-#: ../besocial.php:635
-#: ../besocial.php:648
-#: ../besocial.php:661
-#: ../besocial.php:674
-#: ../besocial.php:700
+#: ../besocial.php:633
+msgid "Found here:"
+msgstr "Puedes encontrarla aquí:"
+
+#: ../besocial.php:638
+#: ../besocial.php:651
+#: ../besocial.php:664
+#: ../besocial.php:677
+#: ../besocial.php:703
 msgid "Submit this to"
 msgstr "Enviar la entrada a"
 
-#: ../besocial.php:687
+#: ../besocial.php:690
 msgid "Bookmark this in"
 msgstr "Guardar la entrada en"
 
+#~ msgid "Bit.ly username"
+#~ msgstr "Nombre de usuario de Bit.ly"
+
+#~ msgid "Bit.ly API key"
+#~ msgstr "Clave API de Bit.ly"

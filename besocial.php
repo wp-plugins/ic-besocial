@@ -4,7 +4,7 @@ Plugin Name: ic BeSocial
 Plugin URI: http://wordpress.org/extend/plugins/ic-besocial/
 Description: Genera botones para el envío o la votación en distintas redes sociales: Facebook, Twitter, Google Buzz, Delicious, Reddit, Meneame, Bitacoras.com, Divúlgame y Divoblogger. Opcionalmente puede mostrar contadores con el número de votos o veces que se ha compartido (según la red).
 Author: Jose Cuesta
-Version: 2.0c
+Version: 2.1
 Author URI: http://www.inerciacreativa.com/
 */
 
@@ -445,7 +445,7 @@ class ic_BeSocial_Button extends ic_Plugin {
 		if ( $this->isActive() ) {
 			$this->initButton($post);
 			if ( $count ) {
-				if (is_single()) {
+				if (is_single() || is_page()) {
 					$this->count = 1;
 				} else {
 					++$this->count;
@@ -537,21 +537,22 @@ class ic_BeSocial_Twitter extends ic_BeSocial_Button {
 	function init() {
 		parent::init();
 
-		add_action('admin_menu', array(&$this, 'initAdmin'));
+		//add_action('admin_menu', array(&$this, 'initAdmin'));
 
 		$this->addOption('user', array('label' => __('Twitter username', 'besocial')));
-		$this->addOption('login', array('label' => __('Bit.ly username', 'besocial'), 'value' => 'retweetjs'));
-		$this->addOption('apikey', array('label' => __('Bit.ly API key', 'besocial'), 'value' => 'R_6287c92ecaf9efc6f39e4f33bdbf80b1', 'info' => __('Found here:', 'besocial') . ' <a href="http://bit.ly/account/your_api_key" target="_blank">http://bit.ly/account/your_api_key</a>'));
-		$this->addOption('url', array('permanent' => false, 'export' => true));
+		//$this->addOption('login', array('label' => __('Bit.ly username', 'besocial'), 'value' => 'retweetjs'));
+		//$this->addOption('apikey', array('label' => __('Bit.ly API key', 'besocial'), 'value' => 'R_6287c92ecaf9efc6f39e4f33bdbf80b1', 'info' => __('Found here:', 'besocial') . ' <a href="http://bit.ly/account/your_api_key" target="_blank">http://bit.ly/account/your_api_key</a>'));
+		//$this->addOption('url', array('permanent' => false, 'export' => true));
 	}
 
 	function initButton( $post ) {
-		if ( $url = $this->getShortURL($post['ID'], $post['url']) ) {
+		//if ( $url = $this->getShortURL($post['ID'], $post['url']) ) {
 			$this->setText('Twitter');
-			$this->setTitle(__('Retweet this', 'besocial'));
-			$this->setHref('http://twitter.com/home?status=' . rawurlencode((($this->getOption('user')) ? 'RT @' . $this->getOption('user') . ' ' : '') . $post['title'] . ' ' . $url));
-			$this->setOption('url', $url);
-		}
+			$this->setTitle(__('Tweet this', 'besocial'));
+			//$this->setHref('http://twitter.com/home?status=' . rawurlencode((($this->getOption('user')) ? 'RT @' . $this->getOption('user') . ' ' : '') . $post['title'] . ' ' . $url));
+			$this->setHref('http://twitter.com/share?url=' . rawurlencode($post['url']) . '&amp;text=' . rawurlencode($post['title']) . '&via=' . rawurlencode($this->getOption('user')));
+			//$this->setOption('url', $url);
+		//}
 	}
 
 	/**

@@ -8,12 +8,26 @@ var BeSocial = (function (config) {
 		request = {},
 		response = {};
 
+	function addEvent(obj, e, fn) {
+		if (obj.addEventListener) {
+			obj.addEventListener(e, fn, false);
+		} else if (obj.attachEvent) {
+			obj.attachEvent('on' + e, fn);
+		}
+	}
+
 	function getNetwork(id) {
 		var button = document.getElementById('besocial-' + id + '-1');
+
 		if (button === null) {
 			return false;
 		} else {
 			buttons[id] = button;
+
+			if (id === 'twitter') {
+				addEvent(button, 'click', openTwitter);
+			}
+
 			return true;
 		}
 	}
@@ -66,6 +80,33 @@ var BeSocial = (function (config) {
 		cleanNetwork(id);
 	}
 
+	function openTwitter(e) {
+		e = e || window.event;
+		var link = e.target || e.srcElement,
+			sw = screen.width,
+			sh = screen.height,
+			width = 550,
+			height = 420,
+			left = 0,
+			top = 0;
+
+		if (sw > width) {
+			left = Math.round(sw / 2 - width / 2);
+		}
+
+		if (sh > height) {
+			top = Math.round(sh / 2 - height / 2);
+		}
+
+		if (link.nodeName.toLowerCase() !== 'a') {
+			link = link.parentNode;
+		}
+
+		window.open(link.href, 'intent', 'scrollbars=yes,resizable=yes,toolbar=no,location=yes'+ ',width=' + width + ',height=' + height + ',left=' + left + ',top=' + top);
+		e.returnValue = false;
+		e.preventDefault && e.preventDefault();
+	}
+
 	function parseMeneame(id, data) {
 		var result = '';
 
@@ -95,18 +136,19 @@ var BeSocial = (function (config) {
 
 	request = {
 		facebook: function () {
-			var urls = [];
+			//var urls = [];
 
-			urls.push(url);
+			//urls.push(url);
 
-			if (config.twitter_url !== '') {
-				urls.push(config.twitter_url);
-			}
+			//if (config.twitter_url !== '') {
+				//urls.push(config.twitter_url);
+			//}
 
 			addScript('facebook', buildQuery('http://api.facebook.com/restserver.php?', {
 				v: '1.0',
 				method: 'fql.query',
-				query: 'select total_count from link_stat where url in("' + urls.join('","') + '")',
+				//query: 'select total_count from link_stat where url in("' + urls.join('","') + '")',
+				query: 'select total_count from link_stat where url="' + url + '"',
 				format: 'json',
 				callback: 'BeSocial.facebook'
 			}));

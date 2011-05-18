@@ -3,15 +3,13 @@ Contributors: Jose Cuesta
 Tags: social, share, button, facebook, twitter, meneame, bitacoras, delicious, reddit, google buzz, divulgame, divoblogger
 Requires at least: 2.9
 Tested up to: 3.1.2
-Stable tag: 2.0c
+Stable tag: 2.1
 
 == Description ==
 
 Genera botones para el envío o la votación en distintas redes sociales: Facebook, Twitter, Delicious, Reddit, Meneame, Bitacoras.com, Divúlgame y Divoblogger. Opcionalmente puede mostrar contadores con el número de votos o veces que se ha compartido (según la red).
 
-También genera automáticamente las URLs cortas mediante Bit.ly al publicar las entradas (aparecen en una caja de la pantalla de edición para poder consultarlas).
-
-Los botones pueden ser insertados de manera automática (por defecto) o manualmente (mediante la función `ic_BeSocial_Buttons()` en single.php), y funcionan de la siguiente manera:
+Los botones pueden ser insertados de manera automática (por defecto) o manualmente (mediante la función `ic_BeSocial_Buttons()`), y funcionan de la siguiente manera:
 
 * **Meneame**: permite enviar la entrada a Meneame o votarla si ya ha sido enviada, pero si la entrada ha sido descartada el botón no aparecerá. El contador muestra el número de votos (meneos).
 * **Bitacoras.com**: permite enviar la entrada a Bitacoras.com o votarla si ya ha sido enviada. El contador muestra el número de votos.
@@ -28,6 +26,13 @@ Los botones pueden ser insertados de manera automática (por defecto) o manualme
 Este plugin ha sido desarrollado por [Inercia Creativa](http://www.inerciacreativa.com/) para el [blog de Maikelnai](http://maikelnai.elcomercio.es/) y liberado para uso y disfrute público.
 
 == Changelog ==
+
+= 2.1 =
+* Se utiliza la nueva forma de envío a Twitter
+* Eliminado el soporte de bit.ly al no ser necesario con el nuevo formato de Twitter
+
+= 2.0c =
+* Corregido bug que impedía mostrar los contadores
 
 = 2.0a =
 * Se incluyen botones para Divúlgame y Divoblogger
