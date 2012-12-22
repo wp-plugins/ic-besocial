@@ -1,5 +1,5 @@
 === ic BeSocial ===
-Contributors: José Cuesta
+Contributors: josecuesta
 Tags: social, share, button, facebook, twitter, meneame, reddit, google+, linkedin
 Requires at least: 3.0
 Tested up to: 3.5
